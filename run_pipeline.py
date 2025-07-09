@@ -147,8 +147,8 @@ def run_pipeline(model_path, source_path, conf_threshold, output_dir, debug):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Full pipeline to detect dice and find number blobs.")
-    parser.add_argument("--model", required=True, help="Path to the YOLOv8 model file.")
     parser.add_argument("--source", required=True, help="Path to the source image.")
+    parser.add_argument("--model", help="Path to the YOLOv8 model file.", default="Detector/best.pt")
     parser.add_argument("--confidence", type=float, default=0.5, help="Confidence threshold for detections.")
     parser.add_argument("--output_dir", default="pipeline_output", help="Main directory to save all outputs.")
     parser.add_argument("--debug", action="store_true", help="If set, saves all intermediate processing steps.")

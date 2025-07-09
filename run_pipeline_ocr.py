@@ -19,7 +19,6 @@ def binarize_image(roi_image):
         tuple[np.ndarray, np.ndarray]: A tuple containing the grayscale image and the binary image.
     """
     # Convert PIL Image to OpenCV format (BGR) and then to grayscale
-    scaled_image = cv2.resize(np.array(roi_image), (640, 480))  # Resize for consistency
     open_cv_image = cv2.cvtColor(np.array(roi_image), cv2.COLOR_RGB2BGR)
     blurred_image = cv2.GaussianBlur(open_cv_image, (5, 5), 0)
     gray = cv2.cvtColor(blurred_image, cv2.COLOR_BGR2GRAY)
@@ -29,7 +28,7 @@ def binarize_image(roi_image):
         gray, 255,
         cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
         cv2.THRESH_BINARY,
-        11, # A slightly larger block size can sometimes help
+        5, # A slightly larger block size can sometimes help
         -4
     )
     return gray, binary_image
@@ -144,16 +143,17 @@ def run_pipeline(model_path, source_path, conf_threshold, output_dir, debug):
         gray_image, binary_image = binarize_image(roi)
         if debug:
             cv2.imwrite(os.path.join(instance_dir, "02_binary_for_ocr.jpg"), binary_image)
+            cv2.imwrite(os.path.join(instance_dir, "03_grayscale.jpg"), gray_image)
 
-        print(f"--- Processing '{instance_name}' with OCR ---")
-        detected_number, final_image = find_and_orient_numbers(binary_image, roi)
+        # print(f"--- Processing '{instance_name}' with OCR ---")
+        # detected_number, final_image = find_and_orient_numbers(binary_image, roi)
 
-        if detected_number:
-            final_path = os.path.join(instance_dir, f"{instance_name}_ocr_result_{detected_number}.jpg")
-            cv2.imwrite(final_path, final_image)
-            print(f"SUCCESS: Final image with OCR result saved to: {final_path}\n")
-        else:
-            print(f"FAILURE: Could not determine the top number for '{instance_name}'.\n")
+        # if detected_number:
+            # final_path = os.path.join(instance_dir, f"{instance_name}_ocr_result_{detected_number}.jpg")
+            # cv2.imwrite(final_path, final_image)
+            # print(f"SUCCESS: Final image with OCR result saved to: {final_path}\n")
+        # else:
+            # print(f"FAILURE: Could not determine the top number for '{instance_name}'.\n")
 
 
 if __name__ == "__main__":
